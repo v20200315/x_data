@@ -4,7 +4,10 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Choice, Question
+from rest_framework import viewsets
+from .serializers import BookSerializer
+
+from .models import Choice, Question, Book
 
 
 class IndexView(generic.ListView):
@@ -47,3 +50,8 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse("samples:results", args=(question.id,)))
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
