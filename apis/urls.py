@@ -3,14 +3,24 @@ from rest_framework.routers import DefaultRouter
 
 from apis.views import CheckTaskStatus
 from samples.views import BookViewSet
-from stocks.views import start_fetch_stock_history
+from stocks.views import (
+    fetch_stock_history,
+    get_stock_history,
+    get_stock_history_from_cache,
+)
 
 router = DefaultRouter()
 router.register(r"books", BookViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("stock_history/", start_fetch_stock_history, name="stock_history"),
+    path("fetch_stock_history/", fetch_stock_history, name="fetch_stock_history"),
+    path("get_stock_history/", get_stock_history, name="get_stock_history"),
+    path(
+        "get_stock_history_from_cache/",
+        get_stock_history_from_cache,
+        name="get_stock_history_from_cache",
+    ),
     path(
         "check_task/<str:task_id>/",
         CheckTaskStatus.as_view(),
