@@ -1,8 +1,9 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from apis.views import CheckTaskStatus
 from samples.views import BookViewSet
-from stocks.views import start_fetch_stock_history, CheckTaskStatus
+from stocks.views import start_fetch_stock_history
 
 router = DefaultRouter()
 router.register(r"books", BookViewSet)
