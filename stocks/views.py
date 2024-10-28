@@ -6,7 +6,7 @@ from django.core.cache import cache
 from io import BytesIO
 
 from .models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq
-from .tasks.init_stock_history import fetch_and_save_stock_history
+from .tasks import fetch_and_save_stock_history
 
 
 def fetch_stock_history(request):

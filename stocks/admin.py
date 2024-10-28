@@ -46,7 +46,7 @@ class RealTimeStockAdmin(admin.ModelAdmin):
 admin.site.register(RealTimeStock, RealTimeStockAdmin)
 
 
-class StockHistoryAdmin(admin.ModelAdmin):
+class StockHistoryBfqAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "trading_date",
@@ -70,7 +70,7 @@ class StockHistoryAdmin(admin.ModelAdmin):
     ]  # 默认排序：stock_code正序，trading_date逆序
 
 
-admin.site.register(StockHistoryBfq)
+admin.site.register(StockHistoryBfq, StockHistoryBfqAdmin)
 
 
 class StockHistoryQfqAdmin(admin.ModelAdmin):
@@ -124,4 +124,4 @@ class StockHistoryHfqAdmin(admin.ModelAdmin):
     ]  # 默认排序：stock_code正序，trading_date逆序
 
 
-admin.site.register(StockHistoryHfq)
+admin.site.register(StockHistoryHfq, StockHistoryHfqAdmin)

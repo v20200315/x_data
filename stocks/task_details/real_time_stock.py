@@ -1,5 +1,4 @@
 import akshare as ak
-from celery import shared_task
 from datetime import datetime
 from django.db import transaction
 from django.utils import timezone
@@ -7,8 +6,7 @@ from django.utils import timezone
 from stocks.models import RealTimeStock
 
 
-@shared_task
-def fetch_and_save_real_time_stock():
+def run():
     print("start fetch_and_save_real_time_stock")
     current_df = ak.stock_zh_a_spot_em()
     naive_datetime = datetime.now()

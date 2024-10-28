@@ -1,5 +1,4 @@
 import akshare as ak
-from celery import shared_task
 from datetime import datetime
 
 from django.db import transaction
@@ -8,8 +7,7 @@ from django.utils import timezone
 from stocks.models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq
 
 
-@shared_task
-def fetch_and_update_stock_history():
+def run():
     print("start fetch_and_update_stock_history")
     current_df = ak.stock_zh_a_spot_em()
     stock_history_bfq_instances = []
