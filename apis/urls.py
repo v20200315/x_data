@@ -5,7 +5,7 @@ from apis.views import CheckTaskStatus
 from samples.views import BookViewSet
 from stocks.views import (
     fetch_stock_history,
-    get_stock_history,
+    get_stock_history_from_db,
     get_stock_history_from_cache,
 )
 
@@ -15,7 +15,11 @@ router.register(r"books", BookViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("fetch_stock_history/", fetch_stock_history, name="fetch_stock_history"),
-    path("get_stock_history/", get_stock_history, name="get_stock_history"),
+    path(
+        "get_stock_history_from_db/",
+        get_stock_history_from_db,
+        name="get_stock_history_from_db",
+    ),
     path(
         "get_stock_history_from_cache/",
         get_stock_history_from_cache,

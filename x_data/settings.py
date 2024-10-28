@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -135,6 +137,17 @@ CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+
+CELERY_BEAT_SCHEDULE = {
+    "fetch_and_save_real_time_stock": {
+        "task": "stocks.tasks.real_time_stock.fetch_and_save_real_time_stock",
+        "schedule": crontab(hour="15", minute="5"),  # 每天下午3点5分执行
+    },
+    "fetch_and_update_stock_history": {
+        "task": "stocks.tasks.update_stock_history.fetch_and_update_stock_history",
+        "schedule": crontab(hour="15", minute="10"),  # 每天下午3点10分执行
+    },
+}
 
 CACHES = {
     "default": {

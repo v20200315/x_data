@@ -1,0 +1,46 @@
+import akshare as ak
+from celery import shared_task
+from datetime import datetime
+from django.db import transaction
+from django.utils import timezone
+
+from stocks.models import RealTimeStock
+
+
+@shared_task
+def fetch_and_save_real_time_stock():
+    print("start fetch_and_save_real_time_stock")
+    current_df = ak.stock_zh_a_spot_em()
+    naive_datetime = datetime.now()
+    aware_datetime = timezone.make_aware(naive_datetime)
+    instances = [
+        RealTimeStock(
+            trading_date_time=aware_datetime,
+            stock_code=current_row[1],
+            stock_name=current_row[2],
+            latest_price=current_row[3],
+            price_change_percentage=current_row[4],
+            price_change_amount=current_row[5],
+            trading_volume=current_row[6],
+            trading_amount=current_row[7],
+            price_range=current_row[8],
+            highest_price=current_row[9],
+            lowest_price=current_row[10],
+            today_opening_price=current_row[11],
+            yesterday_closing_price=current_row[12],
+            volume_ratio=current_row[13],
+            turnover_rate=current_row[14],
+            pe_ratio=current_row[15],
+            pb_ratio=current_row[16],
+            total_market_capitalization=current_row[17],
+            circulating_market_capitalization=current_row[18],
+            increasing_rate=current_row[19],
+            five_minutes_price_change=current_row[20],
+            sixty_days_price_change_percentage=current_row[21],
+            year_to_date_price_change_percentage=current_row[22],
+        )
+        for current_row in current_df.itertuples(index=False)
+    ]
+    with transaction.atomic():  # 使用事务管理
+        RealTimeStock.objects.bulk_create(instances)
+    print("end fetch_and_save_real_time_stock")

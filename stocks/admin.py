@@ -1,17 +1,54 @@
 from django.contrib import admin
 
-from stocks.models import StockHistory, StockHistoryQfq, StockHistoryHfq
+from stocks.models import (
+    StockHistoryBfq,
+    StockHistoryQfq,
+    StockHistoryHfq,
+    RealTimeStock,
+)
+
+
+class RealTimeStockAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "trading_date_time",
+        "stock_code",
+        "stock_name",
+        "latest_price",
+        "price_change_percentage",
+        "price_change_amount",
+        "trading_volume",
+        "trading_amount",
+        "price_range",
+        "highest_price",
+        "lowest_price",
+        "today_opening_price",
+        "yesterday_closing_price",
+        "volume_ratio",
+        "turnover_rate",
+        "pe_ratio",
+        "pb_ratio",
+        "total_market_capitalization",
+        "circulating_market_capitalization",
+        "increasing_rate",
+        "five_minutes_price_change",
+        "sixty_days_price_change_percentage",
+        "year_to_date_price_change_percentage",
+        "created_at",
+    )
+    search_fields = ["stock_code"]  # 允许根据stock_code查询
+    ordering = [
+        "stock_code",
+        "-trading_date_time",
+    ]  # 默认排序：stock_code正序，trading_date逆序
+
+
+admin.site.register(RealTimeStock, RealTimeStockAdmin)
 
 
 class StockHistoryAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(StockHistory)
-
-
-class StockHistoryQfqAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "trading_date",
         "stock_code",
         "opening_price",
@@ -24,6 +61,34 @@ class StockHistoryQfqAdmin(admin.ModelAdmin):
         "price_change_percentage",
         "price_change_amount",
         "turnover_rate",
+        "created_at",
+    )
+    search_fields = ["stock_code"]  # 允许根据stock_code查询
+    ordering = [
+        "stock_code",
+        "-trading_date",
+    ]  # 默认排序：stock_code正序，trading_date逆序
+
+
+admin.site.register(StockHistoryBfq)
+
+
+class StockHistoryQfqAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "trading_date",
+        "stock_code",
+        "opening_price",
+        "closing_price",
+        "highest_price",
+        "lowest_price",
+        "trading_volume",
+        "trading_amount",
+        "price_range",
+        "price_change_percentage",
+        "price_change_amount",
+        "turnover_rate",
+        "created_at",
     )
     search_fields = ["stock_code"]  # 允许根据stock_code查询
     ordering = [
@@ -36,7 +101,27 @@ admin.site.register(StockHistoryQfq, StockHistoryQfqAdmin)
 
 
 class StockHistoryHfqAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        "id",
+        "trading_date",
+        "stock_code",
+        "opening_price",
+        "closing_price",
+        "highest_price",
+        "lowest_price",
+        "trading_volume",
+        "trading_amount",
+        "price_range",
+        "price_change_percentage",
+        "price_change_amount",
+        "turnover_rate",
+        "created_at",
+    )
+    search_fields = ["stock_code"]  # 允许根据stock_code查询
+    ordering = [
+        "stock_code",
+        "-trading_date",
+    ]  # 默认排序：stock_code正序，trading_date逆序
 
 
 admin.site.register(StockHistoryHfq)

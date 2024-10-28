@@ -12,7 +12,10 @@
 #### python manage.py shell
 #### python manage.py createsuperuser
 ### django celery
-#### python manage.py createsuperuser
+#### export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 #### celery -A x_data worker --loglevel=info
+#### celery -A x_data beat --loglevel=info
 ### st url
 #### https://victor-llm-sample.streamlit.app/
+###
+#### TRUNCATE TABLE stocks_realtimestock, stocks_stockhistorybfq, stocks_stockhistoryhfq, stocks_stockhistoryqfq RESTART IDENTITY CASCADE;

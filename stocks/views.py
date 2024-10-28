@@ -5,19 +5,22 @@ import pandas as pd
 from django.core.cache import cache
 from io import BytesIO
 
-from .models import StockHistoryQfq
-from .tasks import fetch_and_save_stock_history, fetch_and_update_stock_history
+from .models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq
+from .tasks.init_stock_history import fetch_and_save_stock_history
 
 
 def fetch_stock_history(request):
-    if StockHistoryQfq.objects.exists():
-        task = fetch_and_update_stock_history.delay()  # 异步调用任务
-    else:
+    if (
+        not StockHistoryBfq.objects.exists()
+        and not StockHistoryQfq.objects.exists()
+        and not StockHistoryHfq.objects.exists()
+    ):
         task = fetch_and_save_stock_history.delay()  # 异步调用任务
-    return JsonResponse({"task_id": task.id, "status": "Task is being processed!"})
+        return JsonResponse({"task_id": task.id, "status": "Task is being processed!"})
+    return JsonResponse({"status": "no task need to process!"})
 
 
-def get_stock_history(request):
+def get_stock_history_from_db(request):
     start_time = time.time()  # 记录开始时间
     dataset = get_2023_stock_history()
     end_time = time.time()  # 记录结束时间
@@ -66,7 +69,6 @@ def check_dataset_memory_usage(dataset):
     print(f"Total memory usage: {total_memory_usage_mb:.2f} MB")
 
 
-# 将DataFrame保存到Redis缓存
 # 将DataFrame保存到Redis缓存
 def save_dataset_to_cache(key, dataset):
     # 使用BytesIO创建一个字节流
