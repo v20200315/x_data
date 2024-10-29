@@ -18,4 +18,4 @@
 ### st url
 #### https://victor-llm-sample.streamlit.app/
 ###
-#### TRUNCATE TABLE stocks_realtimestock, stocks_stockhistorybfq, stocks_stockhistoryhfq, stocks_stockhistoryqfq RESTART IDENTITY CASCADE;
+#### TRUNCATE TABLE stocks_stockhistorybfq, stocks_stockhistoryhfq, stocks_stockhistoryqfq RESTART IDENTITY CASCADE;

@@ -9,35 +9,34 @@ from stocks.models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq
 
 def run():
     print("start fetch_and_update_stock_history")
-    current_df = ak.stock_zh_a_spot_em()
     stock_history_bfq_instances = []
     stock_history_qfq_instances = []
     stock_history_hfq_instances = []
+    current_df = ak.stock_zh_a_spot_em()
     for current_row in current_df.itertuples(index=False):
         stock_code = current_row[1]
         naive_datetime = datetime.now()
         aware_datetime = timezone.make_aware(naive_datetime)
         date_string = aware_datetime.strftime("%Y%m%d")
 
-        _get_stock_history_bfq_instances(
-            stock_history_bfq_instances, stock_code, date_string
+        stock_history_bfq_instances.extend(
+            _get_stock_history_bfq_instances(stock_code, date_string)
         )
-        _get_stock_history_qfq_instances(
-            stock_history_qfq_instances, stock_code, date_string
+        stock_history_qfq_instances.extend(
+            _get_stock_history_qfq_instances(stock_code, date_string)
         )
-        _get_stock_history_hfq_instances(
-            stock_history_hfq_instances, stock_code, date_string
+        stock_history_hfq_instances.extend(
+            _get_stock_history_hfq_instances(stock_code, date_string)
         )
-
-        with transaction.atomic():  # 使用事务管理
-            StockHistoryBfq.objects.bulk_create(stock_history_bfq_instances)
-            StockHistoryQfq.objects.bulk_create(stock_history_qfq_instances)
-            StockHistoryHfq.objects.bulk_create(stock_history_hfq_instances)
+    with transaction.atomic():  # 使用事务管理
+        StockHistoryBfq.objects.bulk_create(stock_history_bfq_instances)
+        StockHistoryQfq.objects.bulk_create(stock_history_qfq_instances)
+        StockHistoryHfq.objects.bulk_create(stock_history_hfq_instances)
 
     print("end fetch_and_update_stock_history")
 
 
-def _get_stock_history_bfq_instances(instances, stock_code, date_string):
+def _get_stock_history_bfq_instances(stock_code, date_string):
     history_df = ak.stock_zh_a_hist(
         symbol=stock_code,
         period="daily",
@@ -45,7 +44,7 @@ def _get_stock_history_bfq_instances(instances, stock_code, date_string):
         end_date=date_string,
         adjust="",
     )
-    instances.append(
+    instances = [
         StockHistoryBfq(
             trading_date=history_row[0],
             stock_code=history_row[1],
@@ -61,10 +60,11 @@ def _get_stock_history_bfq_instances(instances, stock_code, date_string):
             turnover_rate=history_row[11],
         )
         for history_row in history_df.itertuples(index=False)
-    )
+    ]
+    return instances
 
 
-def _get_stock_history_qfq_instances(instances, stock_code, date_string):
+def _get_stock_history_qfq_instances(stock_code, date_string):
     history_df = ak.stock_zh_a_hist(
         symbol=stock_code,
         period="daily",
@@ -72,7 +72,7 @@ def _get_stock_history_qfq_instances(instances, stock_code, date_string):
         end_date=date_string,
         adjust="qfq",
     )
-    instances.append(
+    instances = [
         StockHistoryQfq(
             trading_date=history_row[0],
             stock_code=history_row[1],
@@ -88,10 +88,11 @@ def _get_stock_history_qfq_instances(instances, stock_code, date_string):
             turnover_rate=history_row[11],
         )
         for history_row in history_df.itertuples(index=False)
-    )
+    ]
+    return instances
 
 
-def _get_stock_history_hfq_instances(instances, stock_code, date_string):
+def _get_stock_history_hfq_instances(stock_code, date_string):
     history_df = ak.stock_zh_a_hist(
         symbol=stock_code,
         period="daily",
@@ -99,7 +100,7 @@ def _get_stock_history_hfq_instances(instances, stock_code, date_string):
         end_date=date_string,
         adjust="hfq",
     )
-    instances.append(
+    instances = [
         StockHistoryHfq(
             trading_date=history_row[0],
             stock_code=history_row[1],
@@ -115,4 +116,5 @@ def _get_stock_history_hfq_instances(instances, stock_code, date_string):
             turnover_rate=history_row[11],
         )
         for history_row in history_df.itertuples(index=False)
-    )
+    ]
+    return instances
