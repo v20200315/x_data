@@ -76,3 +76,17 @@ class StockHistoryHfq(AbstractStockHistory):
     class Meta:
         verbose_name = "股票历史记录(后复权)"
         verbose_name_plural = "股票历史记录(后复权)"
+
+
+class TradingDate(models.Model):
+    date = models.DateField(unique=True)
+
+    DATE_TYPE_CHOICES = [
+        ("TRADING_DAY", "交易日"),
+        ("NON_TRADING_DAY", "非交易日"),
+    ]
+    type = models.CharField(max_length=20, choices=DATE_TYPE_CHOICES)
+
+    class Meta:
+        verbose_name = "交易日期"
+        verbose_name_plural = "交易日期"

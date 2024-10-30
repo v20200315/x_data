@@ -155,6 +155,7 @@ CACHES = {
         "LOCATION": "redis://localhost:6379/1",  # Redis服务器的地址和数据库编号
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "TIMEOUT": 300,
         },
     }
 }

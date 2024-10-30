@@ -5,6 +5,7 @@ from stocks.models import (
     StockHistoryQfq,
     StockHistoryHfq,
     RealTimeStock,
+    TradingDate,
 )
 
 
@@ -121,3 +122,16 @@ class StockHistoryHfqAdmin(admin.ModelAdmin):
 
 
 admin.site.register(StockHistoryHfq, StockHistoryHfqAdmin)
+
+
+class TradingDateAdmin(admin.ModelAdmin):
+    list_display = (
+        "date",
+        "type",
+    )
+    ordering = [
+        "-date",
+    ]
+
+
+admin.site.register(TradingDate, TradingDateAdmin)
