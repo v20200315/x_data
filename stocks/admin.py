@@ -10,7 +10,6 @@ from stocks.models import (
 
 class RealTimeStockAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "trading_date_time",
         "stock_code",
         "stock_name",
@@ -48,7 +47,6 @@ admin.site.register(RealTimeStock, RealTimeStockAdmin)
 
 class StockHistoryBfqAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "trading_date",
         "stock_code",
         "opening_price",
@@ -75,7 +73,6 @@ admin.site.register(StockHistoryBfq, StockHistoryBfqAdmin)
 
 class StockHistoryQfqAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "trading_date",
         "stock_code",
         "opening_price",
@@ -102,7 +99,6 @@ admin.site.register(StockHistoryQfq, StockHistoryQfqAdmin)
 
 class StockHistoryHfqAdmin(admin.ModelAdmin):
     list_display = (
-        "id",
         "trading_date",
         "stock_code",
         "opening_price",
