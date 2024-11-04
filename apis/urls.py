@@ -3,7 +3,12 @@ from rest_framework.routers import DefaultRouter
 
 from apis.views import CheckTaskStatus
 from samples.views import BookViewSet
-from stocks.views import fetch_stock_history, get_stock_data, test
+from stocks.views import (
+    fetch_stock_history,
+    get_stock_data,
+    test,
+    get_all_stock_data_by_data_range,
+)
 
 router = DefaultRouter()
 router.register(r"books", BookViewSet)
@@ -11,7 +16,13 @@ router.register(r"books", BookViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("fetch_stock_history/", fetch_stock_history, name="fetch_stock_history"),
-    # GET http://127.0.0.1:8000/api/stock/600519/?start_date=2024-01-01&end_date=2024-10-29
+    # 根据日期区间获取股票的数据
+    path(
+        "stock/date_range/",
+        get_all_stock_data_by_data_range,
+        name="get_all_stock_data_by_data_range",
+    ),
+    # 获取特定股票的数据
     path("stock/<str:stock_code>/", get_stock_data, name="get_stock_data"),
     path("test", test, name="test"),
     path(
