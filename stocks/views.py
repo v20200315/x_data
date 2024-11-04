@@ -5,7 +5,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from x_data.tools import execution_time
+from x_data.tools import (
+    execution_time,
+    get_stock_history_from_cache,
+    save_stock_history_to_cache,
+)
 from .models import StockHistoryBfq, StockHistoryQfq
 from .tasks import (
     fetch_and_save_stock_history,
@@ -60,6 +64,11 @@ def get_all_stock_data_by_data_range(request):
     from_date = request.GET.get("from", None)
     to_date = request.GET.get("to", None)
 
+    key = f"{from_date}_{to_date}_stock_history"
+    cache_data = get_stock_history_from_cache(key)
+    if cache_data is not None:
+        return Response(cache_data, status=status.HTTP_200_OK)
+
     # 检查参数的有效性
     if not from_date and not to_date:
         # 如果没有提供任何日期，默认获取过去两个月的数据
@@ -99,6 +108,8 @@ def get_all_stock_data_by_data_range(request):
             }
             for sd in stock_data
         ]
+
+        save_stock_history_to_cache(key, data)
 
         return Response(data, status=status.HTTP_200_OK)
 

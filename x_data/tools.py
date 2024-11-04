@@ -1,4 +1,6 @@
 import time
+import pickle
+from django.core.cache import cache
 from functools import wraps
 
 
@@ -13,3 +15,14 @@ def execution_time(func):
         return result  # 返回函数结果
 
     return wrapper
+
+
+def get_stock_history_from_cache(key):
+    if cache.get(key) is None:
+        return None
+    dataset = pickle.loads(cache.get(key))
+    return dataset
+
+
+def save_stock_history_to_cache(key, dataset):
+    cache.set(key, pickle.dumps(dataset), timeout=None)
