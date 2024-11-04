@@ -1,13 +1,29 @@
 import akshare as ak
-from datetime import datetime
+from datetime import date, datetime
 from django.db import transaction
 from django.utils import timezone
 
-from stocks.models import RealTimeStock
+from stocks.models import RealTimeStock, TradingDate
 
 
 def run():
     print("start fetch_and_save_real_time_stock")
+
+    today = date.today()
+    try:
+        trading_date = TradingDate.objects.get(date=today)
+        if trading_date.type == "TRADING_DAY":
+            print(f"今天是交易日: {today}")
+            _do_task()
+        else:
+            print(f"今天是非交易日: {today}")
+    except TradingDate.DoesNotExist:
+        print("今天的日期在数据库中不存在，无法判断。")
+
+    print("end fetch_and_save_real_time_stock")
+
+
+def _do_task():
     current_df = ak.stock_zh_a_spot_em()
     naive_datetime = datetime.now()
     aware_datetime = timezone.make_aware(naive_datetime)
@@ -41,4 +57,3 @@ def run():
     ]
     with transaction.atomic():  # 使用事务管理
         RealTimeStock.objects.bulk_create(instances)
-    print("end fetch_and_save_real_time_stock")

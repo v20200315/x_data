@@ -90,8 +90,8 @@ class StockHistoryQfqAdmin(admin.ModelAdmin):
     )
     search_fields = ["stock_code"]  # 允许根据stock_code查询
     ordering = [
-        "stock_code",
         "-trading_date",
+        "stock_code",
     ]  # 默认排序：stock_code正序，trading_date逆序
 
 

@@ -1,14 +1,30 @@
 import akshare as ak
-from datetime import datetime
+from datetime import date, datetime
 
 from django.db import transaction
 from django.utils import timezone
 
-from stocks.models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq
+from stocks.models import StockHistoryBfq, StockHistoryQfq, StockHistoryHfq, TradingDate
 
 
 def run():
     print("start fetch_and_update_stock_history")
+
+    today = date.today()
+    try:
+        trading_date = TradingDate.objects.get(date=today)
+        if trading_date.type == "TRADING_DAY":
+            print(f"今天是交易日: {today}")
+            _do_task()
+        else:
+            print(f"今天是非交易日: {today}")
+    except TradingDate.DoesNotExist:
+        print("今天的日期在数据库中不存在，无法判断。")
+
+    print("end fetch_and_update_stock_history")
+
+
+def _do_task():
     stock_history_bfq_instances = []
     stock_history_qfq_instances = []
     # stock_history_hfq_instances = []
@@ -32,8 +48,6 @@ def run():
         StockHistoryBfq.objects.bulk_create(stock_history_bfq_instances)
         StockHistoryQfq.objects.bulk_create(stock_history_qfq_instances)
         # StockHistoryHfq.objects.bulk_create(stock_history_hfq_instances)
-
-    print("end fetch_and_update_stock_history")
 
 
 def _get_stock_history_bfq_instances(stock_code, date_string):

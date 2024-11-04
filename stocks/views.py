@@ -4,7 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import StockHistoryBfq, StockHistoryQfq
-from .tasks import fetch_and_save_stock_history
+from .tasks import (
+    fetch_and_save_stock_history,
+    fetch_and_save_real_time_stock,
+    fetch_and_update_stock_history,
+)
 from .temps import _get_stock_history_from_db, _get_stock_history_from_cache
 
 
@@ -22,7 +26,9 @@ def get_stock_data(request, stock_code):
     end_date = request.GET.get("end_date", None)
 
     # 根据股票代码从数据库中获取数据
-    stock_data = StockHistoryQfq.objects.filter(stock_code=stock_code)
+    stock_data = StockHistoryQfq.objects.filter(stock_code=stock_code).order_by(
+        "-trading_date"
+    )
 
     if start_date:
         stock_data = stock_data.filter(trading_date__gte=start_date)
@@ -55,6 +61,7 @@ def get_stock_data(request, stock_code):
 @api_view(["GET"])
 def test(request):
     # _get_stock_history_from_db()
-    dataset = _get_stock_history_from_cache()
-    print(type(dataset))
+    # dataset = _get_stock_history_from_cache()
+    # print(type(dataset))
+    fetch_and_update_stock_history()
     return Response(status=status.HTTP_200_OK)

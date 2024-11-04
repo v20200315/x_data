@@ -10,8 +10,8 @@ from x_data.tools import execution_time
 
 @execution_time
 def _get_stock_history_from_db():
-    start_date = date(2023, 1, 1)
-    end_date = date(2023, 12, 31)
+    start_date = date(2024, 1, 1)
+    end_date = date(2024, 12, 31)
     queryset = StockHistoryQfq.objects.filter(
         trading_date__range=[start_date, end_date]
     )
@@ -19,12 +19,12 @@ def _get_stock_history_from_db():
     dataset = pd.DataFrame(data)
     _check_dataset_size(dataset)
     _check_dataset_memory_usage(dataset)
-    cache.set("2023_stock_history", pickle.dumps(dataset), timeout=None)
+    cache.set("2024_stock_history", pickle.dumps(dataset), timeout=None)
 
 
 @execution_time
 def _get_stock_history_from_cache():
-    dataset = pickle.loads(cache.get("2023_stock_history"))
+    dataset = pickle.loads(cache.get("2024_stock_history"))
     _check_dataset_size(dataset)
     _check_dataset_memory_usage(dataset)
     return dataset
