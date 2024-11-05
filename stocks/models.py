@@ -62,6 +62,12 @@ class StockHistoryBfq(AbstractStockHistory):
     class Meta:
         verbose_name = "股票历史记录(不复权)"
         verbose_name_plural = "股票历史记录(不复权)"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trading_date", "stock_code"],
+                name="unique_trading_date_stock_code_bfq",
+            )
+        ]
 
 
 class StockHistoryQfq(AbstractStockHistory):
@@ -69,6 +75,12 @@ class StockHistoryQfq(AbstractStockHistory):
     class Meta:
         verbose_name = "股票历史记录(前复权)"
         verbose_name_plural = "股票历史记录(前复权)"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trading_date", "stock_code"],
+                name="unique_trading_date_stock_code_qfq",
+            )
+        ]
 
 
 class StockHistoryHfq(AbstractStockHistory):
@@ -76,6 +88,12 @@ class StockHistoryHfq(AbstractStockHistory):
     class Meta:
         verbose_name = "股票历史记录(后复权)"
         verbose_name_plural = "股票历史记录(后复权)"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["trading_date", "stock_code"],
+                name="unique_trading_date_stock_code_hfq",
+            )
+        ]
 
 
 class TradingDate(models.Model):

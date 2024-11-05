@@ -13,7 +13,7 @@ def run():
     try:
         trading_date = TradingDate.objects.get(date=today)
         if trading_date.type == "TRADING_DAY":
-            print(f"今天是交易日: {today}")
+            print(f"今天是交易日(fetch_and_save_real_time_stock): {today}")
             _do_task()
         else:
             print(f"今天是非交易日: {today}")

@@ -36,5 +36,10 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     published_date = models.DateField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'author'], name='unique_title_author')
+        ]
+
     def __str__(self):
         return self.title
