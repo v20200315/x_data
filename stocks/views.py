@@ -64,11 +64,6 @@ def get_all_stock_data_by_data_range(request):
     from_date = request.GET.get("from", None)
     to_date = request.GET.get("to", None)
 
-    key = f"{from_date}_{to_date}_stock_history"
-    cache_data = get_stock_history_from_cache(key)
-    if cache_data is not None:
-        return Response(cache_data, status=status.HTTP_200_OK)
-
     # 检查参数的有效性
     if not from_date and not to_date:
         # 如果没有提供任何日期，默认获取过去两个月的数据
@@ -77,6 +72,15 @@ def get_all_stock_data_by_data_range(request):
     elif (from_date and not to_date) or (not from_date and to_date):
         # 如果只提供了一个日期，返回错误
         return Response({"error": "必须同时提供 'from' 和 'to' 日期"}, status=400)
+
+    last_record = StockHistoryQfq.objects.order_by("-trading_date").first()
+    to_date = last_record.trading_date
+
+    key = f"{from_date}_{to_date}_stock_history"
+    cache_data = get_stock_history_from_cache(key)
+    if cache_data is not None:
+        print("get data from cache")
+        return Response(cache_data, status=status.HTTP_200_OK)
 
     try:
         # 将字符串日期转换为日期对象
@@ -110,11 +114,25 @@ def get_all_stock_data_by_data_range(request):
         ]
 
         save_stock_history_to_cache(key, data)
-
+        print("get data from db")
         return Response(data, status=status.HTTP_200_OK)
 
     except ValueError:
         return Response({"error": "日期格式不正确，应为 YYYY-MM-DD"}, status=400)
+
+
+@api_view(["GET"])
+def get_last_trading_date(request):
+    # 获取最后一个交易日的记录
+    last_record = StockHistoryQfq.objects.order_by("-trading_date").first()
+    if last_record:
+        # 将记录转换为字典形式
+        data = {
+            "last_trading_date": last_record.trading_date,
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "No trading data available."}, status=404)
 
 
 @api_view(["GET"])

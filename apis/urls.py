@@ -8,6 +8,7 @@ from stocks.views import (
     get_stock_data,
     test,
     get_all_stock_data_by_data_range,
+    get_last_trading_date,
 )
 
 router = DefaultRouter()
@@ -21,6 +22,10 @@ urlpatterns = [
         "stock/date_range/",
         get_all_stock_data_by_data_range,
         name="get_all_stock_data_by_data_range",
+    ),
+    # 根据股票数据的最后一个交易日
+    path(
+        "stock/last_trading_date/", get_last_trading_date, name="get_last_trading_date"
     ),
     # 获取特定股票的数据
     path("stock/<str:stock_code>/", get_stock_data, name="get_stock_data"),
